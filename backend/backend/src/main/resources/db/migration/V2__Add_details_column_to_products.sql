@@ -1,0 +1,2 @@
+ALTER TABLE products
+ADD COLUMN details VARCHAR(2000); 
