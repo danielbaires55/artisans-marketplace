@@ -36,6 +36,20 @@ export default function HomePage() {
                 >
                     Esplora i Prodotti
                 </Button>
+
+                <Button 
+                    variant="contained" 
+                    size="large"
+                    onClick={() => navigate('/register')}
+                    sx={{
+                        fontSize: '1.2rem',
+                        padding: '12px 32px',
+                        borderRadius: '28px',
+                        textTransform: 'none'
+                    }}
+                >
+                    Registrati
+                </Button>
             </Box>
         </Container>
     );
