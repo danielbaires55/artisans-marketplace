@@ -46,8 +46,9 @@ export default function UserProfile({ user, onUpdate }: UserProfileProps) {
         try {
             await onUpdate(formData);
             setIsEditing(false);
-        } catch (err) {
-            setError('Errore durante l\'aggiornamento del profilo.');
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Errore sconosciuto';
+            setError(`Errore durante l'aggiornamento del profilo: ${errorMessage}`);
         }
     };
 

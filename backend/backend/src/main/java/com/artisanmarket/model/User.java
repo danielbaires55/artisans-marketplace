@@ -1,87 +1,108 @@
 package com.artisanmarket.model;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
-import java.util.List;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", 
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = "email")
+       })
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+  @NotBlank
+  @Size(max = 255)
+  @Email
+  private String email;
 
-    @Column(nullable = false)
-    private String password;
+  @NotBlank
+  @Size(max = 255)
+  private String password;
 
-    @Column(nullable = false)
-    private String firstName;
+  @Size(max = 255)
+  private String firstName;
 
-    @Column(nullable = false)
-    private String lastName;
+  @Size(max = 255)
+  private String lastName;
 
-    @Column(nullable = false)
-    private String address;
+  @Size(max = 255)
+  private String address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Order> orders;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "created_at")
+  private Date createdAt;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+  public User() {
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public User(String email, String password, String firstName, String lastName, String address) {
+    this.email = email;
+    this.password = password;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.address = address;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public String getAddress() {
-        return address;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
+  public String getAddress() {
+    return address;
+  }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-} 
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+}

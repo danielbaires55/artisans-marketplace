@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { 
-    Box, 
-    TextField, 
-    Button, 
-    Typography, 
+import { useState, useEffect } from 'react';
+import {
+    Box,
+    TextField,
+    Button,
+    Typography,
     Paper,
     Alert,
     CircularProgress
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { userApi } from '../../services/api';
+import AuthService from '../../services/auth-service'; 
 
 interface LoginFormData {
     email: string;
@@ -25,6 +25,13 @@ export default function LoginForm() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Redirect se già loggato
+    useEffect(() => {
+        if (AuthService.isLoggedIn()) {
+            navigate('/profile');
+        }
+    }, []);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -37,16 +44,13 @@ export default function LoginForm() {
         e.preventDefault();
         setError('');
         setLoading(true);
-        
+
         try {
-            const response = await userApi.login(formData);
-            console.log('Login successful:', response.data);
-            
-            // Ottieni i dati dell'utente
-            const userResponse = await userApi.getCurrentUser();
-            console.log('User data:', userResponse.data);
-            
-            // Reindirizza al profilo utente
+            const user = await AuthService.login(formData);
+            console.log('Login successful:', user);
+            console.log('Trying to login with:', formData);
+
+            // Redirect all'area protetta
             navigate('/profile');
         } catch (err) {
             console.error('Login error:', err);
