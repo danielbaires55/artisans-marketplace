@@ -28,7 +28,7 @@ export default function LoginForm() {
     // Redirect se già loggato
     useEffect(() => {
         if (AuthService.isLoggedIn()) {
-            navigate('/profile');
+            navigate('/products');
         }
     }, []);
 
@@ -51,7 +51,7 @@ export default function LoginForm() {
             console.log('Trying to login with:', formData);
 
             // Redirect all'area protetta
-            navigate('/profile');
+            navigate('/products'); //Dashboard in futuro
         } catch (err) {
             console.error('Login error:', err);
             setError('Errore durante il login. Verifica le tue credenziali.');
