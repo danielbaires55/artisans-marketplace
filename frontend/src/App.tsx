@@ -32,7 +32,6 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/profile" element={<UserProfilePage />} />
-          {/* Add more routes as needed */}
         </Routes>
       </Router>
     </ThemeProvider>

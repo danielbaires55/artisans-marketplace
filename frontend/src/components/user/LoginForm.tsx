@@ -51,7 +51,7 @@ export default function LoginForm() {
             console.log('Trying to login with:', formData);
 
             // Redirect all'area protetta
-            navigate('/products'); //Dashboard in futuro
+            navigate('/profile'); //Dashboard in futuro
         } catch (err) {
             console.error('Login error:', err);
             setError('Errore durante il login. Verifica le tue credenziali.');

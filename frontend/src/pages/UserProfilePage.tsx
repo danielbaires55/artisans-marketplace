@@ -1,67 +1,56 @@
-import { useState, useEffect } from 'react';
-import { Container, CircularProgress, Alert } from '@mui/material';
-import UserProfile from '../components/user/UserProfile';
-import { userApi } from '../services/api';
+import { useEffect, useState } from "react";
+import UserProfile from "../components/user/UserProfile";
+import AuthService from "../services/auth-service";
+import { User } from "../services/auth-service";
 
 export default function UserProfilePage() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState("");
 
-    useEffect(() => {
-        loadUserProfile();
-    }, []);
-
-    const loadUserProfile = async () => {
-        try {
-            setLoading(true);
-            // TODO: Implementare la chiamata API per ottenere i dati dell'utente
-            const response = await userApi.getCurrentUser();
-            setUser(response.data);
-        } catch (err) {
-            setError('Errore nel caricamento del profilo. Riprova più tardi.');
-        } finally {
-            setLoading(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const currentUser = AuthService.getCurrentUser();
+        if (!currentUser) {
+          throw new Error("Utente non autenticato");
         }
+        setUser({
+          id: currentUser.id,
+          email: currentUser.email,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          address: '', // Add default empty string if address is undefined
+          createdAt: new Date().toISOString(), // Puoi aggiornare con un valore reale
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Errore sconosciuto");
+      }
     };
 
-    const handleUpdateProfile = async (updatedData: any) => {
-        try {
-            // TODO: Implementare la chiamata API per aggiornare i dati dell'utente
-            const response = await userApi.updateProfile(updatedData);
-            setUser(response.data);
-        } catch (err) {
-            throw new Error('Errore durante l\'aggiornamento del profilo');
-        }
-    };
+    fetchUser();
+  }, []);
 
-    if (loading) {
-        return (
-            <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                <CircularProgress />
-            </Container>
-        );
+  const handleUpdate = async (updatedUser: Partial<User>) => {
+    try {
+      // Effettua la chiamata API per aggiornare i dati dell'utente
+      const updatedProfile = await AuthService.updateUserProfile(updatedUser);
+      console.log("Profilo aggiornato:", updatedProfile);
+  
+      // Aggiorna lo stato locale con i dati aggiornati
+      setUser((prevUser) => (prevUser ? { ...prevUser, ...updatedProfile } : null));
+    } catch (err) {
+      console.error("Errore durante l'aggiornamento:", err);
+      setError("Errore durante l'aggiornamento del profilo. Riprova più tardi.");
     }
+  };
 
-    if (error) {
-        return (
-            <Container sx={{ mt: 4 }}>
-                <Alert severity="error">{error}</Alert>
-            </Container>
-        );
-    }
+  if (error) {
+    return <div>Errore: {error}</div>;
+  }
 
-    if (!user) {
-        return (
-            <Container sx={{ mt: 4 }}>
-                <Alert severity="info">Utente non trovato</Alert>
-            </Container>
-        );
-    }
+  if (!user) {
+    return <div>Caricamento...</div>;
+  }
 
-    return (
-        <Container sx={{ py: 4 }}>
-            <UserProfile user={user} onUpdate={handleUpdateProfile} />
-        </Container>
-    );
-} 
+  return <UserProfile user={user} onUpdate={handleUpdate} />;
+}

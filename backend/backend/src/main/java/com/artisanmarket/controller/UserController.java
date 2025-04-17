@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import com.artisanmarket.model.User;
+import com.artisanmarket.security.services.UserDetailsImpl;
 import com.artisanmarket.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(
-    origins = "http://localhost:5173",
-    allowedHeaders = "*",
-    methods = {
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", methods = {
         RequestMethod.GET,
         RequestMethod.POST,
         RequestMethod.PUT,
@@ -33,14 +32,11 @@ import com.artisanmarket.service.UserService;
         RequestMethod.OPTIONS,
         RequestMethod.HEAD,
         RequestMethod.PATCH
-    },
-    allowCredentials = "true",
-    maxAge = 3600
-)
+}, allowCredentials = "true", maxAge = 3600)
 public class UserController {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    
+
     @Autowired
     private UserService userService;
 
@@ -48,22 +44,22 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody User user) {
         logger.info("Received registration request");
         logger.debug("Registration details: {}", user);
-        
+
         try {
             if (user == null) {
                 logger.error("Registration failed: user data is null");
                 return ResponseEntity.badRequest().body("User data cannot be null");
             }
-            
+
             if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
                 logger.error("Registration failed: email is missing");
                 return ResponseEntity.badRequest().body("Email is required");
             }
-            
+
             logger.info("Processing registration for email: {}", user.getEmail());
             User registeredUser = userService.createUser(user);
             logger.info("Registration successful for user ID: {}", registeredUser.getId());
-            
+
             return ResponseEntity.ok(registeredUser);
         } catch (Exception e) {
             logger.error("Registration failed with error: {}", e.getMessage(), e);
@@ -79,15 +75,15 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
@@ -114,7 +110,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
         logger.info("Received login request for email: {}", loginRequest.getEmail());
-        
+
         try {
             User user = userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
             if (user != null) {
@@ -132,8 +128,16 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        // TODO: Implementare la logica per ottenere l'utente corrente dal contesto di sicurezza
+        // TODO: Implementare la logica per ottenere l'utente corrente dal contesto di
+        // sicurezza
         // Per ora restituiamo un errore 501 Not Implemented
         return ResponseEntity.status(501).body("Funzionalità non ancora implementata");
     }
-} 
+
+    @PutMapping("/me")
+    public ResponseEntity<?> updateUserProfile(@RequestBody User updatedUser, Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userService.updateUser(userDetails.getId(), updatedUser);
+        return ResponseEntity.ok(user);
+    }
+}

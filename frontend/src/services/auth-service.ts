@@ -43,7 +43,6 @@ export interface DecodedToken {
 // API URL - replace with your actual API URL
 const API_URL = "http://localhost:8080/api/auth/";
 
-// Service class for authentication
 class AuthService {
   async login(loginRequest: LoginRequest): Promise<AuthResponse> {
     const response = await axios.post(API_URL + "signin", loginRequest);
@@ -57,9 +56,7 @@ class AuthService {
     localStorage.removeItem("user");
   }
 
-  async register(
-    registerRequest: RegisterRequest
-  ): Promise<{ message: string }> {
+  async register(registerRequest: RegisterRequest): Promise<{ message: string }> {
     return axios.post(API_URL + "signup", registerRequest);
   }
 
@@ -95,6 +92,23 @@ class AuthService {
       return {};
     }
   }
+
+  async getUserProfile(): Promise<User> {
+    const headers = this.getAuthHeader();
+    const response = await axios.get("http://localhost:8080/api/users/me", {
+      headers,
+    });
+    return response.data;
+  }
+
+  async updateUserProfile(updatedData: Partial<User>): Promise<User> {
+    const headers = this.getAuthHeader();
+    const response = await axios.put("http://localhost:8080/api/users/me", updatedData, {
+      headers,
+    });
+    return response.data;
+  }
+
 }
 
 export default new AuthService();
