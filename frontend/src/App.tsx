@@ -6,6 +6,7 @@ import ProductDetailsPage from './pages/ProductDetailsPage';
 import LoginForm from './components/user/LoginForm';
 import RegisterForm from './components/user/RegisterForm';
 import ArtisanProfilePage from './pages/ArtisanProfilePage';
+import UserProfilePage from './pages/UserProfilePage';
 
 const theme = createTheme({
   palette: {
@@ -27,9 +28,11 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailsPage />} />
-          <Route path="/artisans/:id" element={<ArtisanProfilePage />} />
+          <Route path="/artisans/:id" element={<ArtisanProfilePage />} /> 
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+          {/* Add more routes as needed */}
         </Routes>
       </Router>
     </ThemeProvider>

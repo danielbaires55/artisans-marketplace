@@ -12,6 +12,7 @@ import com.artisanmarket.security.services.UserDetailsImpl;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtils {
@@ -37,6 +38,11 @@ public class JwtUtils {
   public String getUserNameFromJwtToken(String token) {
     return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parseClaimsJws(token).getBody().getSubject();
   }
+
+  @PostConstruct
+public void init() {
+    logger.debug("JWT Secret length: {}", jwtSecret.getBytes().length);
+}
 
   public boolean validateJwtToken(String authToken) {
     try {

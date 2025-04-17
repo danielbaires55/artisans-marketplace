@@ -69,10 +69,13 @@ public class WebSecurityConfig {
       .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/api/auth/**").permitAll()
+        .requestMatchers("/api/auth/signin").permitAll()
+        .requestMatchers("/api/auth/signup").permitAll()
         .requestMatchers("/api/test/**").permitAll()
-        .requestMatchers("/api/products/**").permitAll() // Permetti accesso pubblico ai prodotti
-        .requestMatchers("/api/users/register").permitAll() // Permetti accesso pubblico alla registrazione
+        .requestMatchers("/api/products/**").permitAll()
+        .requestMatchers("/api/users/**").permitAll()
+        .requestMatchers("/api/auth/invalidate").permitAll() // Consenti l'accesso pubblico
+
         .anyRequest().authenticated());
 
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
