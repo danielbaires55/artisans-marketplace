@@ -72,6 +72,7 @@ public class WebSecurityConfig {
         .requestMatchers("/api/auth/**").permitAll()
         .requestMatchers("/api/test/**").permitAll()
         .requestMatchers("/api/products/**").permitAll() // Permetti accesso pubblico ai prodotti
+        .requestMatchers("/api/users/register").permitAll() // Permetti accesso pubblico alla registrazione
         .anyRequest().authenticated());
 
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
