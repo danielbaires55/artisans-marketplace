@@ -26,6 +26,8 @@ import com.artisanmarket.repository.UserRepository;
 import com.artisanmarket.security.jwt.JwtUtils;
 import com.artisanmarket.security.services.UserDetailsImpl;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -50,14 +52,14 @@ public class AuthController {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String jwt = jwtUtils.generateJwtToken(authentication);
-    
+
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-    return ResponseEntity.ok(new JwtResponse(jwt, 
-                         userDetails.getId(), 
-                         userDetails.getEmail(), 
-                         userDetails.getFirstName(),
-                         userDetails.getLastName()));
+    return ResponseEntity.ok(new JwtResponse(jwt,
+        userDetails.getId(),
+        userDetails.getEmail(),
+        userDetails.getFirstName(),
+        userDetails.getLastName()));
   }
 
   @PostMapping("/signup")
@@ -70,36 +72,23 @@ public class AuthController {
 
     // Create new user's account
     User user = new User(
-               signUpRequest.getEmail(),
-               encoder.encode(signUpRequest.getPassword()),
-               signUpRequest.getFirstName(),
-               signUpRequest.getLastName(),
-               signUpRequest.getAddress());
-    
+        signUpRequest.getEmail(),
+        encoder.encode(signUpRequest.getPassword()),
+        signUpRequest.getFirstName(),
+        signUpRequest.getLastName(),
+        signUpRequest.getAddress());
+
     user.setCreatedAt(new Date());
-    
+
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
 
-  @PostMapping("/seed-test-user")
-public ResponseEntity<?> seedTestUser() {
-  if (userRepository.existsByEmail("baires468@gmail.com"))
-    return ResponseEntity.ok("User already exists");
-
-  User user = new User(
-      "baires468@gmail.com",
-      encoder.encode("123"),
-      "Test",
-      "User",
-      "Some Address"
-  );
-  user.setCreatedAt(new Date());
-
-  userRepository.save(user);
-
-  return ResponseEntity.ok("User created!");
-}
+  @PostMapping("/logout")
+  public ResponseEntity<?> logoutUser(HttpServletRequest request) {
+    request.getSession().invalidate(); // Invalida la sessione
+    return ResponseEntity.ok(new MessageResponse("Logout effettuato con successo!"));
+  }
 
 }

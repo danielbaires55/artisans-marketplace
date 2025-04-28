@@ -7,6 +7,7 @@ import LoginForm from './components/user/LoginForm';
 import RegisterForm from './components/user/RegisterForm';
 import ArtisanProfilePage from './pages/ArtisanProfilePage';
 import UserProfilePage from './pages/UserProfilePage';
+import HandleLogout from './components/user/HandleLogout';
 
 const theme = createTheme({
   palette: {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/logout" element={<HandleLogout />} />
         </Routes>
       </Router>
     </ThemeProvider>

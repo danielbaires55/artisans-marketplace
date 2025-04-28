@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Container, Typography, Box, Button, Alert } from '@mui/material';
+import { Container, Typography, Box, Alert } from '@mui/material';
 import ProductList from '../components/products/ProductList';
-import { useNavigate } from 'react-router-dom';
 import { productApi } from '../services/api';
 import { Product } from '../types';
 
 export default function ProductsPage() {
-    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [error, setError] = useState('');
 
@@ -31,24 +29,6 @@ export default function ProductsPage() {
                 flexDirection: 'column',
                 gap: 3
             }}>
-                {/* <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'flex-end',
-                    gap: 2
-                }}>
-                    <Button 
-                        variant="outlined"
-                        onClick={() => navigate('/login')}
-                    >
-                        Accedi
-                    </Button>
-                    <Button 
-                        variant="contained"
-                        onClick={() => navigate('/register')}
-                    >
-                        Registrati
-                    </Button>
-                </Box> */}
 
                 <Typography 
                     variant="h4" 

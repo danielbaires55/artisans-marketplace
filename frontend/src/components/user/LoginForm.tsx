@@ -30,7 +30,7 @@ export default function LoginForm() {
         if (AuthService.isLoggedIn()) {
             navigate('/products');
         }
-    }, []);
+    }, [navigate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -46,14 +46,17 @@ export default function LoginForm() {
         setLoading(true);
 
         try {
-            const user = await AuthService.login(formData);
-            console.log('Login successful:', user);
-            console.log('Trying to login with:', formData);
+            // Effettua il login tramite AuthService
+            const response = await AuthService.login(formData);
 
-            // Redirect all'area protetta
-            navigate('/profile'); //Dashboard in futuro
+            // Salva il token in localStorage
+            localStorage.setItem('token', response.token);
+            console.log('Login effettuato con successo. Token salvato:', response.token);
+
+            // Reindirizza all'area protetta
+            navigate('/profile'); // Dashboard in futuro
         } catch (err) {
-            console.error('Login error:', err);
+            console.error('Errore durante il login:', err);
             setError('Errore durante il login. Verifica le tue credenziali.');
         } finally {
             setLoading(false);

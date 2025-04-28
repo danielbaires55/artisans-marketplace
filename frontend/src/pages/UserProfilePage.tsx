@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import UserProfile from "../components/user/UserProfile";
+import LogoutButton from "../components/user/LogoutButton"; // Importa il pulsante di logout
 import AuthService from "../services/auth-service";
 import { User } from "../services/auth-service";
 
@@ -52,5 +53,10 @@ export default function UserProfilePage() {
     return <div>Caricamento...</div>;
   }
 
-  return <UserProfile user={user} onUpdate={handleUpdate} />;
+  return (
+    <div>
+      <UserProfile user={user} onUpdate={handleUpdate} />
+      <LogoutButton /> {/* Aggiungi il pulsante di logout */}
+    </div>
+  );
 }
