@@ -73,6 +73,7 @@ public class WebSecurityConfig {
         .requestMatchers("/api/auth/signup").permitAll()
         .requestMatchers("/api/test/**").permitAll()
         .requestMatchers("/api/products/**").permitAll()
+        .requestMatchers("/api/artisans/**").authenticated()
         .requestMatchers("/api/users/**").permitAll()
         .requestMatchers("/api/auth/invalidate").permitAll() // Consenti l'accesso pubblico
         .requestMatchers("/api/users/me").authenticated()

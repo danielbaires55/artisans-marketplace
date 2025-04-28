@@ -15,6 +15,7 @@ api.interceptors.response.use(
     error => {
         if (error.response?.status === 401) {
             // Gestione token scaduto o non autorizzato
+            
             localStorage.removeItem('token');
             window.location.href = '/login';
         }
@@ -26,13 +27,21 @@ api.interceptors.response.use(
 // Interceptor per aggiungere il token alle richieste
 api.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            const token = user.token;
+            if (token) {
+                console.log('Token inviato:', token);
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        } else {
+            console.warn('Nessun utente trovato in localStorage.');
         }
         return config;
     },
     error => Promise.reject(error)
 );
+
 
 export default api; 
